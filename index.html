@@ -644,7 +644,7 @@ function addSmile(s) {
 }
 
 // ============================================================
-// АДМИНКА
+// АДМИНКА (ПОЛНОСТЬЮ РАБОТАЕТ ЧЕРЕЗ GAS)
 // ============================================================
 function checkAdminPassword() {
     const pass = prompt("Введите пароль:");
@@ -711,7 +711,7 @@ async function saveAdminParams() {
         const newsData = await newsRes.json();
         if (newsData.status !== 'ok') throw new Error('Ошибка новостей: ' + JSON.stringify(newsData));
 
-        alert('✅ Всё сохранено!');
+        alert('✅ Всё сохранено в Google Таблицу!');
         closeAdminPanel();
         loadNews(); loadProjects(); loadShiftTime();
     } catch (e) {
