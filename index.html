@@ -242,7 +242,7 @@ const ADMIN_PASSWORD = '2517';
 let isAdmin = false;
 
 // ============================================================
-// GAS URL
+// GAS URL — ТВОЯ ССЫЛКА (уже вставлена)
 // ============================================================
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbzfoWTF2ZSKrYKiJ1iKPqJ2e0UUYBqqTKgkv_zIVx7DSlgaAk81fJpzct_Sz61hkLtvIg/exec';
 
@@ -333,9 +333,11 @@ async function sendMessage() {
         if (data.status === 'ok') {
             document.getElementById('chat-text').value = '';
             loadMessages();
+        } else {
+            alert('❌ Ошибка: ' + (data.message || 'неизвестная'));
         }
     } catch (e) {
-        alert('Ошибка отправки');
+        alert('❌ Ошибка отправки: ' + e.message);
     }
 }
 
@@ -693,14 +695,26 @@ async function saveAdminParams() {
     const content = document.getElementById('newsEditor').value;
 
     try {
-        await fetch(GAS_URL + '?action=saveProjects&data=' + encodeURIComponent(JSON.stringify(projs)));
-        await fetch(GAS_URL + '?action=saveShift&time=' + encodeURIComponent(time) + '&date=' + encodeURIComponent(date));
-        await fetch(GAS_URL + '?action=saveNews&content=' + encodeURIComponent(content));
-        alert('✅ Сохранено!');
+        // Сохраняем проекты
+        const projRes = await fetch(GAS_URL + '?action=saveProjects&data=' + encodeURIComponent(JSON.stringify(projs)));
+        const projData = await projRes.json();
+        if (projData.status !== 'ok') throw new Error('Ошибка сохранения проектов: ' + JSON.stringify(projData));
+
+        // Сохраняем время
+        const shiftRes = await fetch(GAS_URL + '?action=saveShift&time=' + encodeURIComponent(time) + '&date=' + encodeURIComponent(date));
+        const shiftData = await shiftRes.json();
+        if (shiftData.status !== 'ok') throw new Error('Ошибка сохранения времени: ' + JSON.stringify(shiftData));
+
+        // Сохраняем новости
+        const newsRes = await fetch(GAS_URL + '?action=saveNews&content=' + encodeURIComponent(content));
+        const newsData = await newsRes.json();
+        if (newsData.status !== 'ok') throw new Error('Ошибка сохранения новостей: ' + JSON.stringify(newsData));
+
+        alert('✅ Всё сохранено!');
         closeAdminPanel();
         loadNews(); loadProjects(); loadShiftTime();
     } catch (e) {
-        alert('❌ Ошибка сохранения');
+        alert('❌ Ошибка сохранения: ' + e.message);
     }
 }
 
@@ -712,12 +726,17 @@ function closeAdminPanel() {
 async function clearNews() {
     if (!confirm('Удалить все новости?')) return;
     try {
-        await fetch(GAS_URL + '?action=saveNews&content=');
-        document.getElementById('newsEditor').value = '';
-        loadNews();
-        alert('✅ Новости очищены');
+        const response = await fetch(GAS_URL + '?action=saveNews&content=');
+        const data = await response.json();
+        if (data.status === 'ok') {
+            document.getElementById('newsEditor').value = '';
+            loadNews();
+            alert('✅ Новости очищены');
+        } else {
+            throw new Error(data.message || 'неизвестная ошибка');
+        }
     } catch (e) {
-        alert('❌ Ошибка');
+        alert('❌ Ошибка очистки: ' + e.message);
     }
 }
 
