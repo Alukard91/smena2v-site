@@ -242,9 +242,9 @@ const ADMIN_PASSWORD = '2517';
 let isAdmin = false;
 
 // ============================================================
-// GAS URL — ЕДИНСТВЕННОЕ МЕСТО, ГДЕ НУЖНО ПОМЕНЯТЬ ССЫЛКУ
+// GAS URL
 // ============================================================
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbwd2EpVQiKCQG7Fen3hrL-GMOp8sP8Hvp65fzpFbjfhIcZGxb3aHAZFBr-ngHTEltVTAQ/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzfoWTF2ZSKrYKiJ1iKPqJ2e0UUYBqqTKgkv_zIVx7DSlgaAk81fJpzct_Sz61hkLtvIg/exec';
 
 // ============================================================
 // НОВОСТИ
@@ -408,7 +408,6 @@ async function askTimeViaGAS() {
     const btn = document.getElementById('ask-time-btn');
     btn.disabled = true;
     btn.innerText = '📨 Отправляем...';
-    // Этот запрос пока оставим как заглушку, позже добавим через Telegram
     setTimeout(() => {
         btn.innerText = '✅ Запрос отправлен!';
     }, 1500);
